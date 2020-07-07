@@ -12,17 +12,17 @@ const LoginForm = () => {
     const onFinish = values => {
         console.log('Received values of form: ', values);
         
-      if(signUpInfo.find(v => v.email === values.email && v.password === values.password)){
+      // if(signUpInfo.find(v => v.email === values.email && v.password === values.password)){
         dispatch({
           type : LOG_IN_REQUEST,
           data : {
             email : values.email,
-            password : values.password
+            password : values.password,
           }
         })
-      } else {
-        message.warn('존재 하지 않는 아이디 입니다')
-      }
+      // } else {
+        // message.warn('존재 하지 않는 아이디 입니다')
+      // }
       };
 
     return (

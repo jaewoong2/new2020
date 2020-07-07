@@ -14,22 +14,25 @@ const Sliders = () => {
             lineHeight: '20%',
             background: '#dfdfdfec',
             overflow: 'hidden',
+            
         }
     })
 
     const styleDiv = useMemo(() => {
         return {
             height: '20%',
-            cursor : 'hand'
+            cursor : 'hand',
+            width : '70%',
         }
     })
 
     const styleImg = useMemo(() => {
         return {
             display : 'block',
+            width : '70%',
             margin : 'auto',
             height : '100%',
-            boxShadow: '5px 5px 5px #000',
+            boxShadow: '0.1px 0.1px 0.1px #000',
             position : 'relative',
             cursor : 'hand'
         }

@@ -61,10 +61,10 @@ const upload = () => {
             type : UP_LOAD_POST_REQUEST,
             data : {
                 id : Math.floor(Math.random() * 1414),
-                content : content,
+                description : content,
                 image : imagePaths,
                 title : title,
-                price : price
+                price : String(price)
             }
         })
         Router.replace('/');

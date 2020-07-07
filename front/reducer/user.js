@@ -49,8 +49,8 @@ const initialState = {
     itemByeCartDone: false,
     itemByeCartError: null,
 
-    signUpInfo: [],
-    me: dummy,
+    // signUpInfo: [],
+    me: {},
     cartMessage : '',
 }
 
@@ -67,7 +67,7 @@ const reducer = (state = initialState, action) => {
             case SIGN_UP_SUCCESS:
                 draft.signUpLoading = false;
                 draft.signUpDone = true;
-                draft.signUpInfo.push(action.data);
+                // draft.signUpInfo.push(action.data);
                 break;
 
 

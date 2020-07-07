@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Form,
     Input,
@@ -12,17 +12,17 @@ import { SIGN_UP_REQUEST } from '../reducer/user';
 import  Router from 'next/router';
 
 const SignUp = () => {
-    const { signUpLoading } = useSelector(state => state.user);
+    const { signUpLoading, signUpDone } = useSelector(state => state.user);
     const [form] = Form.useForm();
     const dispatch = useDispatch()
 
-    const onFinish = values => {
+    const onFinish = useCallback((values) => {
        dispatch({
            type : SIGN_UP_REQUEST,
            data : values
        });
-       Router.replace('/')
-    };
+       !signUpLoading && Router.replace('/')
+    }, [signUpLoading]);
 
     const formItemLayout = {
         labelCol: {
@@ -66,7 +66,7 @@ const SignUp = () => {
                         },
                         {
                             required: true,
-                            message: 'Please input your E-mail!',
+                            message: '이메일을 입력 해주세요',
                         },
                     ]}
                 >
@@ -79,7 +79,7 @@ const SignUp = () => {
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your password!',
+                            message: '비밀번호를 입력해주세요',
                         },
                     ]}
                     hasFeedback
@@ -95,14 +95,14 @@ const SignUp = () => {
                     rules={[
                         {
                             required: true,
-                            message: 'Please confirm your password!',
+                            message: '비밀번호를 확인 해야합니다',
                         },
                         ({ getFieldValue }) => ({
                             validator(rule, value) {
                                 if (!value || getFieldValue('password') === value) {
                                     return Promise.resolve();
                                 }
-                                return Promise.reject('The two passwords that you entered do not match!');
+                                return Promise.reject('비밀번호가 일치 하지 않습니다.');
                             },
                         }),
                     ]}
@@ -120,7 +120,7 @@ const SignUp = () => {
                             </Tooltip>
                         </span>
                     }
-                    rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
+                    rules={[{ required: true, message: '닉네임을 설정해주세요', whitespace: true }]}
                 >
                     <Input />
                 </Form.Item>
@@ -129,17 +129,17 @@ const SignUp = () => {
                     name="agreement"
                     valuePropName="checked"
                     rules={[
-                        { validator: (_, value) => value ? Promise.resolve() : Promise.reject('Should accept agreement') },
+                        { validator: (_, value) => value ? Promise.resolve() : Promise.reject('동의 하셔야 합니다.') },
                     ]}
                     {...tailFormItemLayout}
                 >
                     <Checkbox>
-                        I have read the <a>agreement</a>
+                        <a>약관</a>
                     </Checkbox>
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit">
-                        Register
+                    <Button loading={signUpLoading} type="primary" htmlType="submit">
+                        회원가입
         </Button>
                 </Form.Item>
             </Form>

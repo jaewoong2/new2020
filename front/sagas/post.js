@@ -40,20 +40,27 @@ function upLoadPostAPI(data) {
 
 function* upLoadPost(action) {
     try {  
-        //  const result = yield call(upLoadPostAPI, action.data)
-        const data = yield call(() => {
+         const result = yield call(upLoadPostAPI, action.data)
+        // const data = yield call(() => {
+        //     return {
+        //         id : action.data.id,
+        //         title : action.data.title,
+        //         description : action.data.content,
+        //         image : action.data.image[0],
+        //         price : action.data.price,
+        //     }
+        // });
+        // yield delay(1000);
+        const variables = yield call(() => {
             return {
-                id : action.data.id,
-                title : action.data.title,
-                description : action.data.content,
-                image : action.data.image[0],
-                price : action.data.price,
+                ...result.data,
+                image : result.data.Images[0].src,
+                price : parseInt(result.data.price, 10)
             }
-        });
-        yield delay(1000);
+        })
         yield put({
             type : UP_LOAD_POST_SUCCESS,
-            data : data
+            data : variables
         })
         
     } catch(err) {

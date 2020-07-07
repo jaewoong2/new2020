@@ -7,23 +7,23 @@ import { dummyCardMaking } from "../reducer/post";
 /////////////////////////////////////////////////////////////////////////////
 
 function signupAPI(data) {
-    return axios.put('/user/signup', data)
+    return axios.post('/user', data)
 }
 
 function* signup(action) {
     try {  
-        //  const result = yield call(signupAPI, action.data)
-        yield delay(1000);
+         const result = yield call(signupAPI, action.data)
+        // yield delay(1000);
         yield put({
             type : SIGN_UP_SUCCESS,
-            data : action.data
+            // data : result.data
         })
         
     } catch(err) {
         console.error(err)
         yield put({
             type : SIGN_UP_FAILURE,
-            // error : err.response.data
+            error : err.response.data
         })
     }
 }
@@ -35,23 +35,23 @@ function* watchSignUp() {
 /////////////////////////     회원가입    /////////////////////////////////
 
 function loginAPI(data) {
-    return axios.get(`/user/login/${data}`)
+    return axios.post('/user/login', data)
 }
 
 function* login(action) {
     try {  
-        //  const result = yield call(loginAPI, action.data)
-        const dummyUser = 
-            {
-                email : action.data.email,
-                password : action.data.password,
-                Carts : [],
-            }
+         const result = yield call(loginAPI, action.data)
+        // const dummyUser = 
+        //     {
+        //         email : action.data.email,
+        //         password : action.data.password,
+        //         Carts : [],
+        //     }
         
-        yield delay(1000);
+        // yield delay(1000);
         yield put({
             type : LOG_IN_SUCCESS,
-            data : dummyUser
+            data : result.data
         })
         
     } catch(err) {
@@ -70,13 +70,13 @@ function* watchLogin() {
 
 
 function logoutAPI() {
-    return axios.delete('/user/logout')
+    return axios.post('/user/logout')
 }
 
 function* logout(action) {
     try {  
-        //  const result = yield call(logoutAPI, action.data)
-        yield delay(1000);
+         const result = yield call(logoutAPI, action.data)
+        // yield delay(1000);
         yield put({
             type : LOG_OUT_SUCCESS,
             // data : action.data
@@ -86,7 +86,7 @@ function* logout(action) {
         console.error(err)
         yield put({
             type : LOG_OUT_FAILURE,
-            // error : err.response.data
+            error : err.response.data
         })
     }
 }

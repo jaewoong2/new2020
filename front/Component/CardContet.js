@@ -14,7 +14,7 @@ const CardContet = ({ content }) => {
     const onClicktoCart = useCallback(() => {
         !me?.email && message.warn('로그인 후 이용가능합니다')
         
-        if(!me?.Carts.find(v => v.id === content.id)) {
+        if(!me?.Carts?.find(v => v.id === content.id)) {
              dispatch({
                 type : ITEM_TO_CART_REQUEST,
                 data : content
@@ -22,7 +22,7 @@ const CardContet = ({ content }) => {
             !itemToCartLoading && message.info('장바구니에 담는 중...')
         }
     
-       if(me?.Carts.find(v => v.id === content.id)) {
+       if(me?.Carts?.find(v => v.id === content.id)) {
             dispatch({
                type : ITEM_BYE_CART_REQUEST,
                data : content.id
@@ -48,7 +48,7 @@ const CardContet = ({ content }) => {
     actions={[
         <span>{content.price ? `${content.price} 원` : 'free'}</span>,
         // itemToCartLoading || itemByeCartLoading  ? <LoadingOutlined />
-         <ShoppingTwoTone onClick={onClicktoCart} twoToneColor={me?.Carts.find(v => v.id === content.id) ? 'gray' : '#3f9e13e1'} />
+         <ShoppingTwoTone onClick={onClicktoCart} twoToneColor={me?.Carts?.find(v => v.id === content.id) ? 'gray' : '#3f9e13e1'} />
     ]}
     >
     <Meta description={content.description} />
