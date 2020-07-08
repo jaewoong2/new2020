@@ -17,7 +17,7 @@ router.post('/', async(req, res, next) => {
             const result = await Promise.all(hashtags.map((tag) => Hashtag.findOrCreate({
                 where : { name : tag.slice(1).toLowerCase() }
             })));
-            await post.addHashtags(result.map(v => v[0]));
+            await post.addPostHashTags(result.map(v => v[0]));
         }
 
         if(req.body.image) {
@@ -49,11 +49,75 @@ router.post('/', async(req, res, next) => {
                 model : User,
                 attributes : ['id'],
                 as : 'Carts',
+            }, {
+                model : Hashtag,
+                as : 'PostHashTags'
             }]
         })
         res.status(201).json(fullPost)
     } catch(err) {
         console.error(err);
+        next(err)
+    }
+})
+
+router.get('/:postId', async (req, res, next) => {
+    try {
+        const post = await Post.findOne({
+            where : {id : req.params.postId},
+            include : [{
+                model : Image
+            }, {
+                model : Review,
+                include : [{
+                    model : User,
+                    attributes : ['id', 'nickname'],
+                }]
+            }, {
+                model : Hashtag,
+                as : 'PostHashTags'
+            }, { 
+                model : User,
+                attributes : {
+                    exclude : ["password"]
+                }
+            }, {
+                model : User,
+                as : 'Carts',
+                attributes : {
+                    exclude : ['password'],
+                }
+            },]
+        });
+        if(!post) {
+            return res.status(403).send('게시글이 존재 하지 않습니다.')
+        }
+        res.status(201).json(post)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
+
+router.delete('/:postId', async (req, res, next) => {
+    try {
+        const post =  await Post.findOne({
+            where : {id : req.params.postId}
+        })
+        if(!post) {
+            return res.status(403).send('게시글이 존재 하지 않습니다.')
+        }
+        
+        await Post.destroy({
+            where : {
+                id : req.params.postId,
+                UserId : req.user.id,
+            },
+        });
+        res.json({PostId : parseInt(req.params.postId, 10)})
+    } catch(err) {
+        console.error(err)
         next(err)
     }
 })

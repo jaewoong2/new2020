@@ -4,26 +4,22 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOG_IN_REQUEST } from '../reducer/user';
+import { useCallback } from 'react';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const { signUpInfo , loginLoading} = useSelector((state) => state.user)
+  const { loginLoading, loginError } = useSelector((state) => state.user)
 
-    const onFinish = values => {
-        console.log('Received values of form: ', values);
-        
-      // if(signUpInfo.find(v => v.email === values.email && v.password === values.password)){
+    const onFinish = useCallback((values) => {
         dispatch({
           type : LOG_IN_REQUEST,
           data : {
             email : values.email,
             password : values.password,
           }
-        })
-      // } else {
-        // message.warn('존재 하지 않는 아이디 입니다')
-      // }
-      };
+        });
+        loginError && message.warn(loginError)
+      },[loginError]);
 
     return (
             <Form

@@ -28,10 +28,10 @@ const cart = () => {
 
     useEffect(() => {
       setSum(0);
-      me.Carts?.map(v => {
+      me?.Carts?.map(v => {
         setSum(prev => prev + v.price)
       })
-    },[me.Carts])
+    },[me?.Carts])
 
     const onPayCart = useCallback(() =>{
       // 구현 해야함

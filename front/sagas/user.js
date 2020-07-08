@@ -41,14 +41,6 @@ function loginAPI(data) {
 function* login(action) {
     try {  
          const result = yield call(loginAPI, action.data)
-        // const dummyUser = 
-        //     {
-        //         email : action.data.email,
-        //         password : action.data.password,
-        //         Carts : [],
-        //     }
-        
-        // yield delay(1000);
         yield put({
             type : LOG_IN_SUCCESS,
             data : result.data
@@ -58,7 +50,7 @@ function* login(action) {
         console.error(err)
         yield put({
             type : LOG_IN_FAILURE,
-            // error : err.response.data
+            error : err.response.data
         })
     }
 }

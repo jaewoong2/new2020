@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { HomeOutlined, AppstoreOutlined, SettingOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link'
-import { Menu, Modal } from 'antd';
+import { Menu, Modal, message } from 'antd';
 import LoginForm from './LoginForm';
 import ModalForm from './ModalForm';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,35 +11,46 @@ const { SubMenu } = Menu;
 const NavBar = () => {
     const [current, setCurrent] = useState('');
     const dispatch = useDispatch();
-    const { me } = useSelector((state) => state.user);
+    const { me, loginLoading, loginDone } = useSelector((state) => state.user);
     const [modal, setModal] = useState(false);
 
-    
     const style = useMemo(() => {
         return {
             float : 'right'
           }
     },[]);
-    
+
+    const styleDIv = useMemo(() => {
+        return {
+            width : '100%', 
+            display : "flex"
+          }
+    },[]);
+
+    const styleMenu = useMemo(() => {
+        return {
+            width : '100%'
+          }
+    },[]);
+
     const handleClick = (e) => {
         setCurrent(e.key)
     }
     
-    useEffect(() => {
-        if(current ==='logout') {        
+    const onLogOutClick = useCallback(() => {
         dispatch({
             type : LOG_OUT_REQUEST
         })
-    }
-    },[])
+         loginDone && loginLoading && message.success('로그아웃 성공')
+    },[loginDone, loginLoading])
     
     const onModal = useCallback(() => {
         setModal(prev => !prev)
     },[])
 
     return (
-        <div  style={{ width : '100%', display : "flex"}}>
-        <Menu onClick={handleClick} style={{ width : '100%'}} selectedKeys={current} mode="horizontal" overflowedIndicator={<div style={style}>...</div>} >
+        <div  style={styleDIv}>
+        <Menu onClick={handleClick} style={styleMenu} selectedKeys={current} mode="horizontal" overflowedIndicator={<div style={style}>...</div>} >
             <Menu.Item key="Home" icon={<HomeOutlined />}>
                 <Link href="/"><a>Home</a></Link>
             </Menu.Item>
@@ -50,7 +61,7 @@ const NavBar = () => {
             (<Menu.Item key="login" style={style} icon={<AppstoreOutlined />}>
                 <a onClick={onModal}>로그인</a>
             </Menu.Item>) : 
-            (<Menu.Item key="logout" style={style} icon={<AppstoreOutlined />}>
+            (<Menu.Item  key="logout" onClick={onLogOutClick} style={style} icon={<AppstoreOutlined />}>
                 <a>로그아웃</a>
             </Menu.Item>)}
             <SubMenu style={style} icon={<SettingOutlined />} title="">

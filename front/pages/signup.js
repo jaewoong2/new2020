@@ -11,8 +11,10 @@ const signup = () => {
   
 
   useEffect(() => {
-    me && message.error('로그아웃 후 이용 부탁 드립니다.')
-    Router.replace('/')
+    if(me?.email) {
+      message.error('로그아웃 후 이용 부탁 드립니다.')
+      Router.replace('/')
+    }  
   },[me])
 
     return (

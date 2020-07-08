@@ -9,16 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const CardComponent = () => {
     const { mainPosts, loadPostLoading }  = useSelector(state => state.post);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-    const dummy = Array(30).fill(0).map((v) => dummyCardMaking())
-    mainPosts.length ===0 && dispatch({
-        type : LOAD_POST_REQUEST,
-        data : dummy,
-    })
-    console.log(mainPosts)
-    },[mainPosts])
-
+    
     useEffect(() =>{
         loadPostLoading && message.loading('로딩 중 입니다')
     },[loadPostLoading])
