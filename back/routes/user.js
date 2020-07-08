@@ -19,7 +19,7 @@ router.get('/', async (req, res, next) => {
                     model : Post
                 }, {
                     model : Post,
-                    as : 'Cart'
+                    as : 'Carts'
                 }]
             });
             return res.status(200).json(fullUser)

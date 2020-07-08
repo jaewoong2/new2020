@@ -22,15 +22,11 @@ export const ITEM_BYE_CART_REQUEST = 'ITEM_BYE_CART_REQUEST'
 export const ITEM_BYE_CART_SUCCESS = 'ITEM_BYE_CART_SUCCESS'
 export const ITEM_BYE_CART_FAILURE = 'ITEM_BYE_CART_FAILURE'
 
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
 
 ////////////////////////////////////////////////////////////////////////////
-
-
-const dummy = {
-    email : 'hi@naver.com',
-    password : '1234',
-    Carts : [],
-}
 
 const initialState = {
     signUpLoading: false,
@@ -40,6 +36,10 @@ const initialState = {
     loginLoading: false, //로그아웃 동일
     loginDone: false, // 로그아웃 동일
     loginError: null, // 로그아웃 동일
+
+    loadMyInfoLoading: false, //로그아웃 동일
+    loadMyInfoDone: false, // 로그아웃 동일
+    loadMyInfoError: null, // 로그아웃 동일
 
     itemToCartLoading: false,
     itemToCartDone: false,
@@ -51,7 +51,7 @@ const initialState = {
 
     // signUpInfo: [],
     me: {},
-    cartMessage : '',
+    cartMessage: '',
 }
 
 
@@ -158,6 +158,25 @@ const reducer = (state = initialState, action) => {
                 draft.itemByeCartLoading = false;
                 draft.itemByeCartDone = true;
                 draft.itemByeCartError = action.error;
+                break;
+
+            // 로그인 정보 받아오기
+            case LOAD_MY_INFO_REQUEST:
+                draft.loadMyInfoLoading = true;
+                draft.loadMyInfoDone = false;
+                draft.loadMyInfoError = null;
+                break;
+
+            case LOAD_MY_INFO_SUCCESS:
+                draft.loadMyInfoLoading = false;
+                draft.loadMyInfoDone = true;
+                draft.me = action.data;
+                break;
+
+            case LOAD_MY_INFO_FAILURE:
+                draft.loadMyInfoLoading = false;
+                draft.loadMyInfoDone = true;
+                draft.loadMyInfoError = action.error;
                 break;
 
         }

@@ -1,5 +1,5 @@
 import { takeLatest, delay, call, fork, all, put } from "redux-saga/effects"
-import { LOG_IN_REQUEST, LOG_IN_FAILURE, LOG_IN_SUCCESS, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE, LOG_OUT_REQUEST, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, ITEM_TO_CART_REQUEST, ITEM_TO_CART_SUCCESS, ITEM_TO_CART_FAILURE, ITEM_BYE_CART_REQUEST, ITEM_BYE_CART_SUCCESS, ITEM_BYE_CART_FAILURE } from "../reducer/user"
+import { LOG_IN_REQUEST, LOG_IN_FAILURE, LOG_IN_SUCCESS, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE, LOG_OUT_REQUEST, LOG_OUT_FAILURE, LOG_OUT_SUCCESS, ITEM_TO_CART_REQUEST, ITEM_TO_CART_SUCCESS, ITEM_TO_CART_FAILURE, ITEM_BYE_CART_REQUEST, ITEM_BYE_CART_SUCCESS, ITEM_BYE_CART_FAILURE, LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE } from "../reducer/user"
 import axios from 'axios';
 import { dummyCardMaking } from "../reducer/post";
 
@@ -96,6 +96,33 @@ function* watchLogout() {
 }
 /////////////////////////     로그아웃    /////////////////////////////////////
 
+function loadMyInfoAPI() {
+    return axios.get('/user')
+}
+
+function* loadMyInfo(action) {
+    try {  
+         const result = yield call(loadMyInfoAPI, action.data)
+        // yield delay(1000);
+        yield put({
+            type : LOAD_MY_INFO_SUCCESS,
+            data : result.data
+        })
+        
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type : LOAD_MY_INFO_FAILURE,
+            error : err.response.data
+        })
+    }
+}
+
+function* watchLoadMyInfo() {
+    yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+/////////////////////////  내정보 받아오기    /////////////////////////////////////
+
 
 function itemToCartAPI() {
     return axios.post('/user/cart')
@@ -160,5 +187,6 @@ export default function* userSaga() {
         fork(watchLogout),
         fork(watchItemToCart),
         fork(watchItemByeCart),
+        fork(watchLoadMyInfo),
     ])
 }

@@ -6,22 +6,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import faker from 'faker';
 import { UP_LOAD_POST_REQUEST } from '../reducer/post';
 import Router, { useRouter } from 'next/router';
+import { LOAD_MY_INFO_REQUEST } from '../reducer/user';
+import hashtag from '../../back/models/hashtag';
 
 const imagePaths = [ faker.image.image(),faker.image.image(), faker.image.image()];
 
 const upload = () => {
     const [content, setContent] = useState('');    
     const [title, setTitle] = useState('');    
-    const [price, setPrice] = useState(0);    
+    const [price, setPrice] = useState(0);   
+    const [hashtag, setHashtag] = useState('')
 
+    const { me } = useSelector((state) => state.user);
     const { upLoadPostDone, upLoadPostLoading } = useSelector(state => state.post)
     const router = useRouter();
     const imageInput = useRef();
     const dispatch = useDispatch();
     
     useEffect(() => {
+        dispatch({
+          type : LOAD_MY_INFO_REQUEST
+        })
+      },[])
 
-    },[upLoadPostDone, upLoadPostLoading])
+      useEffect(() =>{
+        if(!me?.email) {
+            message.warn('로그인한 회원만 접근 할 수 있습니다.')
+            Router.replace('/')
+        }
+      },[me])
 
     const onClickImageUpload = useCallback(() => {
         imageInput.current.click();
@@ -44,6 +57,10 @@ const upload = () => {
         setContent(e.target.value);
     },[])
 
+    const onChangeHashtag = useCallback((e) => {
+        setHashtag(e.target.value);
+    },[])
+
     const onChangeTitle = useCallback((e) => {
         setTitle(e.target.value);
     },[])
@@ -57,22 +74,34 @@ const upload = () => {
     }
 
     const onImageUpload = useCallback(() =>{
-        dispatch({
-            type : UP_LOAD_POST_REQUEST,
-            data : {
-                id : Math.floor(Math.random() * 1414),
-                description : content,
-                image : imagePaths,
-                title : title,
-                price : String(price)
+        const arrHash = [];
+
+        hashtag?.split(/(#[^\s#]+)/g).map(((v) => {
+            if (!v.match(/(#[^\s#]+)/g)) {
+                if(v.trim() !== "") {
+                    arrHash.push(v)
+                }
+            }}));
+
+            if(arrHash.length > 0) {
+                console.log(arrHash)
+                return  message.warn('해쉬태그만 사용해주세요')
+            } else {
+                dispatch({
+                    type : UP_LOAD_POST_REQUEST,
+                    data : {
+                        description : content,
+                        image : imagePaths,
+                        title : title,
+                        price : String(price),
+                        hashtag : hashtag
+                    }
+                })
+                !upLoadPostLoading && Router.replace('/');
+                !upLoadPostLoading && message.info('업로드 되었습니다.')
             }
-        })
-        Router.replace('/');
-        
-    },[content, title, imagePaths, price])
+    },[content, title, imagePaths, price, hashtag])
     
-
-
 
     return (
         <AppLayout>
@@ -104,7 +133,7 @@ const upload = () => {
              placeholder="상품소개"
             />
             <Input style={{ marginTop : "10px" }} type="number" value={price}  placeholder="가격" onChange={onChangePrice}></Input>
-
+            <Input style={{ marginTop : "10px" }}  required={true} type="text" value={hashtag}  placeholder="해쉬태그" onChange={onChangeHashtag}></Input>
               <div style={{ marginTop : "10px" }}>
                 <input type="file" name='image' multiple hidden ref={imageInput} onChange={onChangeInput}/>
                 <Button onClick={onClickImageUpload}>

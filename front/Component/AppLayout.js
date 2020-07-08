@@ -3,15 +3,14 @@ import NavBar from './NavBar'
 import { Row, Col } from 'antd';
 import  Router, { useRouter } from 'next/router';
 import Sliders from './imgCarousel/Slider';
+import { useDispatch } from 'react-redux';
 
 
 const AppLayout = ({ children, name }) => {
-
+  const dispatch = useDispatch();
   const router = useRouter();
 
-  useEffect(() => {
-    console.log(router.pathname.slice(1))
-  })
+
   
   return (
     <div>

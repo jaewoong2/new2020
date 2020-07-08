@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.post('/', async(req, res, next) => {
     try {
-        const hashtags = req.body.description.match(/(#[^\s#]+)/g);
+        const hashtags = req.body.hashtag.match(/(#[^\s#]+)/g);
         const post = await Post.create({
             title : req.body.title,
             description : req.body.description,

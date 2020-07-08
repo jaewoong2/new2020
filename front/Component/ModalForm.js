@@ -9,13 +9,12 @@ const ModalForm = ({ name }) => {
     const { loginDone, me } = useSelector((state) => state.user);
     const [visible, setVisible] = useState(true);
 
-    console.log(name)
     useEffect(() => {
-        if(name === "SignUp" && me.email) {
+        if(name === "SignUp" && me?.email) {
             message.warn('로그아웃 하신 후에 가능합니다')
             Router.replace('/')
         }
-        if(me.email) {
+        if(me?.email) {
             setVisible(false)
         }
     },[me])

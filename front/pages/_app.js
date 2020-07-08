@@ -7,7 +7,9 @@ import '../Component/app.css'
 import wrapper from '../store/configureStore';
 import withReduxSaga from 'next-redux-saga';
 import { Layout } from 'antd'
-const { Footer } = Layout
+const { Footer } = Layout;
+
+
 const myApp = ( { Component, pageProps } ) => {
  
     return (

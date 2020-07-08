@@ -4,7 +4,7 @@ import { List ,message, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { ShoppingTwoTone } from '@ant-design/icons';
 import { useCallback } from 'react';
-import { ITEM_BYE_CART_REQUEST } from '../reducer/user';
+import { ITEM_BYE_CART_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducer/user';
 
 const cart = () => {
     const { me } = useSelector(state => state.user); 
@@ -16,9 +16,15 @@ const cart = () => {
         type : ITEM_BYE_CART_REQUEST,
         data : id
       });
-      message.info('제거중..')
+      message.info('장바구니에서 상품을 빼는 중 입니다.')
     },[])
     
+    useEffect(() => {
+      dispatch({
+        type : LOAD_MY_INFO_REQUEST
+      })
+
+    },[])
 
     useEffect(() => {
       setSum(0);
@@ -26,7 +32,6 @@ const cart = () => {
         setSum(prev => prev + v.price)
       })
     },[me.Carts])
-
 
     const onPayCart = useCallback(() =>{
       // 구현 해야함

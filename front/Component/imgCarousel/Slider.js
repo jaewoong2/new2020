@@ -14,7 +14,6 @@ const Sliders = () => {
             lineHeight: '20%',
             background: '#dfdfdfec',
             overflow: 'hidden',
-            
         }
     })
 
@@ -22,19 +21,21 @@ const Sliders = () => {
         return {
             height: '20%',
             cursor : 'hand',
-            width : '70%',
+            width : '60%',
+            maxHeight: '480px',
         }
     })
 
     const styleImg = useMemo(() => {
         return {
             display : 'block',
-            width : '70%',
             margin : 'auto',
-            height : '100%',
+            // 중간
+            maxWidth : '70vw',
+            maxHeight : '100%',
+            // 이미지 태그에선 높이랑 너비를 직접 주면안됨
             boxShadow: '0.1px 0.1px 0.1px #000',
-            position : 'relative',
-            cursor : 'hand'
+            cursor : 'hand',
         }
     })
 
