@@ -1,8 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const { User, Post } = require('../models');
+const { User, Post, Image } = require('../models');
 const user = require('../models/user');
+const { isNotLoggedIn, isLoggedIn } = require('./middleware');
 const router = express.Router()
 
 
@@ -19,7 +20,10 @@ router.get('/', async (req, res, next) => {
                     model : Post
                 }, {
                     model : Post,
-                    as : 'Carts'
+                    as : 'Carts',
+                    include : [{
+                        model : Image
+                    }]
                 }]
             });
             return res.status(200).json(fullUser)
@@ -33,7 +37,7 @@ router.get('/', async (req, res, next) => {
 })
 
 //회원가입
-router.post('/', async (req, res, next) => {
+router.post('/', isNotLoggedIn ,async (req, res, next) => {
     try {
         const exUser = await User.findOne({
             where : {
@@ -59,7 +63,7 @@ router.post('/', async (req, res, next) => {
 
 
 //로그인
-router.post('/login', (req, res, next) => {
+router.post('/login', isNotLoggedIn,(req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err) {
             console.error(err)
@@ -81,7 +85,10 @@ router.post('/login', (req, res, next) => {
                     model : Post
                 }, {
                     model : Post,
-                    as : 'Carts'
+                    as : 'Carts',
+                    include : [{
+                        model : Image
+                    }]
                 }]
             });
             return res.status(200).json(fullUser)
@@ -91,17 +98,20 @@ router.post('/login', (req, res, next) => {
 
 
 //로그아웃 
-router.post('/logout', (req, res) => {
+router.post('/logout', isLoggedIn ,(req, res) => {
     req.logout();
     req.session.destroy();
     res.send('로그아웃 성공');
 });
 
 //장바구니 담기
-router.patch('/cart/:postId', async (req, res, next) => {
+router.patch('/cart/:postId', isLoggedIn ,async (req, res, next) => {
     try {
         const post = await Post.findOne({
-            where : { id : req.params.postId }
+            where : { id : req.params.postId },
+            include : [{
+                model : Image
+            }]
         })
         if(!post) {
             return res.status(403).send('존재하지 않는 게시물 입니다');
@@ -114,7 +124,21 @@ router.patch('/cart/:postId', async (req, res, next) => {
     }
 })
 
-
+router.delete('/cart/:postId', isLoggedIn ,async(req, res, next) => {
+    try {
+        const post = await Post.findOne({
+            where : { id : req.params.postId }
+        })
+        if(!post) {
+            return res.status(403).send('존재하지 않는 상품 입니다')
+        }
+        await post.removeCarts(req.user.id)
+        res.status(200).json(parseInt(req.params.postId, 10))
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
 
 
 

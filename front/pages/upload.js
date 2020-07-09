@@ -118,7 +118,8 @@ const upload = () => {
 
     const marginTopStyle = useMemo(() => {
         return {
-            marginTop : '10px'
+            marginTop : '10px',
+            width : '60%'
         }
     });
 
@@ -154,7 +155,7 @@ const upload = () => {
     const formStyle = useMemo(() => {
         return {
             marginLeft : '10px',
-            marginRight : '10px'
+            marginRight : '10px',
         }
     })
 
@@ -187,7 +188,7 @@ const upload = () => {
             <br/><br/><br/>
             <div>
             <Form style={formStyle} encType="multipart/form-data" onFinish={onImageUpload}>
-            <StyledInputs placeholder="상품명" key={`${me?.id} + ${me?.email} + title `}  style={{ fontSize : '32px', fontWeight : 'bold'}} type='text' value={title} onChange={onChangeTitle}></StyledInputs>
+            <StyledInputs placeholder="상품명" key={`${me?.id} + ${me?.email} + title `}  style={{ fontSize : '32px', fontWeight : 'bold', width : '90%'}} type='text' value={title} onChange={onChangeTitle}></StyledInputs>
             <br/><br/>
             <Input.TextArea 
              value={content}
@@ -197,7 +198,7 @@ const upload = () => {
             />
             <StyledInputs key={`${me?.id} + ${me?.email} + price `} style={marginTopStyle} type="number" value={price}  placeholder="가격" onChange={onChangePrice}></StyledInputs>
             <StyledInputs key={`${me?.id} + ${me?.email} + hashtag `} style={marginTopStyle}  required={true} type="text" value={hashtag}  placeholder="해쉬태그" onChange={onChangeHashtag}></StyledInputs>
-              <div style={marginTopStyle}>
+              <div style={{marginTop : '10px'}}>
                 <input type="file" name='image' multiple hidden ref={imageInput} onChange={onChangeInput}/>
                 <Button onClick={onClickImageUpload}>
                     이미지 업로드

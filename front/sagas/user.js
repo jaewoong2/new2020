@@ -117,13 +117,13 @@ function* watchLoadMyInfo() {
 
 
 function itemToCartAPI(data) {
-    return axios.post('/user/cart', data)
+    return axios.patch(`/user/cart/${data}`)
 }
 
 function* itemToCart(action) {
     try {  
-         const result = yield call(itemToCartAPI, action.data)
-        yield delay(2000);
+         const result = yield call(itemToCartAPI, action.data) // content.id
+        // yield delay(2000);
         yield put({
             type : ITEM_TO_CART_SUCCESS,
             data : result.data
@@ -154,7 +154,7 @@ function* itemByeCart(action) {
         // yield delay(1000);
         yield put({
             type : ITEM_BYE_CART_SUCCESS,
-            data : action.data
+            data : result.data
         })
         
     } catch(err) {

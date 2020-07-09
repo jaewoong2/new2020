@@ -1,9 +1,10 @@
 const express = require('express');
 const { User, Post, Hashtag, Image, Review } = require('../models');
 const { response } = require('express');
+const { isLoggedIn } = require('./middleware');
 const router = express.Router()
 
-router.post('/', async(req, res, next) => {
+router.post('/', isLoggedIn,async(req, res, next) => {
     try {
         const hashtags = req.body.hashtag.match(/(#[^\s#]+)/g);
         const post = await Post.create({
@@ -61,7 +62,7 @@ router.post('/', async(req, res, next) => {
     }
 })
 
-router.get('/:postId', async (req, res, next) => {
+router.get('/:postId', async (req, res, next) => { // 홈페이지 확인
     try {
         const post = await Post.findOne({
             where : {id : req.params.postId},
@@ -100,10 +101,10 @@ router.get('/:postId', async (req, res, next) => {
 })
 
 
-router.delete('/:postId', async (req, res, next) => {
+router.delete('/:postId', isLoggedIn ,async (req, res, next) => {
     try {
         const post =  await Post.findOne({
-            where : {id : req.params.postId}
+            where : { id : req.params.postId }
         })
         if(!post) {
             return res.status(403).send('게시글이 존재 하지 않습니다.')

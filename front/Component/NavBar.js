@@ -1,18 +1,38 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { HomeOutlined, AppstoreOutlined, SettingOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { HomeOutlined, AppstoreOutlined, SettingOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import Link from 'next/link'
-import { Menu, Modal, message } from 'antd';
+import { Menu, Modal, message, Input } from 'antd';
 import LoginForm from './LoginForm';
 import ModalForm from './ModalForm';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOG_OUT_REQUEST } from '../reducer/user';
+import styled from 'styled-components';
 const { SubMenu } = Menu;
+
+
+const SearchInput = styled(Input.Search)`
+    vertical-align : middle;
+`;
+
 
 const NavBar = () => {
     const [current, setCurrent] = useState('');
+    const [clickSearch, setClickSearch] = useState(false);
+    const [search, setSearch] = useState('');
+
     const dispatch = useDispatch();
     const { me, loginLoading, loginDone } = useSelector((state) => state.user);
     const [modal, setModal] = useState(false);
+
+    useEffect(() => {
+        if(search) {
+            setClickSearch(true)
+        }
+        if(!search) {
+            setClickSearch(false)
+        }
+    },[search])
+
 
     const style = useMemo(() => {
         return {
@@ -36,6 +56,10 @@ const NavBar = () => {
     const handleClick = (e) => {
         setCurrent(e.key)
     }
+
+    const onChangeSearch = useCallback((e) =>{
+        setSearch(e.target.value)
+    }, [])
     
     const onLogOutClick = useCallback(() => {
         dispatch({
@@ -48,6 +72,11 @@ const NavBar = () => {
         setModal(prev => !prev)
     },[])
 
+    const onSearch = useCallback(() => {
+        message.info('구현 중 입니다')
+        // Router.push(`/hashtag/${search}`)
+    },[search])
+
     return (
         <div  style={styleDIv}>
         <Menu onClick={handleClick} style={styleMenu} selectedKeys={current} mode="horizontal" overflowedIndicator={<div style={style}>...</div>} >
@@ -57,6 +86,16 @@ const NavBar = () => {
             <Menu.Item key="upload" icon={<AppstoreOutlined />}>
                 <Link href="/upload"><a>Upload</a></Link>
             </Menu.Item>
+            <Menu.Item onClick={() => {!clickSearch && setClickSearch(true)}}>
+            {!clickSearch ?
+                <SearchOutlined /> :
+                    (<SearchInput 
+                    value={search}
+                    onChange={onChangeSearch}
+                    onSearch={onSearch}
+                    enterButton='검색'/>
+                )}
+                </Menu.Item>
             {!me?.email ? 
             (<Menu.Item key="login" style={style} icon={<AppstoreOutlined />}>
                 <a onClick={onModal}>로그인</a>

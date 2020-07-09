@@ -130,7 +130,7 @@ const reducer = (state = initialState, action) => {
             case ITEM_TO_CART_SUCCESS:
                 draft.itemToCartLoading = false;
                 draft.itemToCartDone = true;
-                draft.me.Carts.unshift(action.data);
+                draft.me.Carts.unshift({Cart : action.data});
                 draft.cartMessage = '장바구니에 상품이 추가 됐습니다.'
                 break;
 
@@ -150,7 +150,7 @@ const reducer = (state = initialState, action) => {
             case ITEM_BYE_CART_SUCCESS:
                 draft.itemByeCartLoading = false;
                 draft.itemByeCartDone = true;
-                draft.me.Carts = draft.me.Carts.filter(v => v.id !== action.data);
+                draft.me.Carts = draft.me.Carts.filter(v => v?.Cart.PostId !== action.data);
                 draft.cartMessage = '장바구니의 상품을 삭제했습니다.'
                 break;
 
