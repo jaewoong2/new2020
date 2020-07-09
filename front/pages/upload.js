@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react';
+import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react';
 import AppLayout from '../Component/AppLayout';
 import { Upload, Button, Form, Input, Row, Col, message } from 'antd';
 import { UploadOutlined, DeleteOutlined, LineOutlined, MinusSquareOutlined } from '@ant-design/icons';
@@ -8,6 +8,19 @@ import { UP_LOAD_POST_REQUEST } from '../reducer/post';
 import Router, { useRouter } from 'next/router';
 import { LOAD_MY_INFO_REQUEST } from '../reducer/user';
 import hashtag from '../../back/models/hashtag';
+import styled from 'styled-components';
+
+const StyledInputs = styled(Input)`
+    border : 0;
+    border-bottom : solid 1px #ababab;
+    &:focus {
+        outline : none;
+        box-shadow : none;
+        border-bottom-width : 100%
+    }
+    `
+    // antd는 outline 을 안쓰고 box-shadow를 쓴다
+
 
 const imagePaths = [ faker.image.image(),faker.image.image(), faker.image.image()];
 
@@ -17,7 +30,7 @@ const upload = () => {
     const [price, setPrice] = useState(0);   
     const [hashtag, setHashtag] = useState('')
 
-    const { me } = useSelector((state) => state.user);
+    const { me, loadMyInfoLoading } = useSelector((state) => state.user);
     const { upLoadPostDone, upLoadPostLoading } = useSelector(state => state.post)
     const router = useRouter();
     const imageInput = useRef();
@@ -30,7 +43,7 @@ const upload = () => {
       },[])
 
       useEffect(() =>{
-        if(!me?.email) {
+        if(!loadMyInfoLoading && !me?.email) {
             message.warn('로그인한 회원만 접근 할 수 있습니다.')
             Router.replace('/')
         }
@@ -103,16 +116,67 @@ const upload = () => {
     },[content, title, imagePaths, price, hashtag])
     
 
+    const marginTopStyle = useMemo(() => {
+        return {
+            marginTop : '10px'
+        }
+    });
+
+    const RowStyle = useMemo(() => {
+        return {
+            marginLeft :'10px', 
+            marginRight : "10px" 
+        }
+    });
+
+    const divStyle = useMemo(() => {
+        return {
+            width: '100%',
+             height: '100%'
+        }
+    })
+
+    const imgStyle = useMemo(() => {
+        return {
+            width : '100%'
+        }
+    })
+
+    const iconStyle = useMemo(() => {
+        return {
+            marginTop : '10px',
+            color: 'rgb(234, 16, 34)',
+            fontSize: '16px', 
+            float : 'right'
+            }
+    });
+
+    const formStyle = useMemo(() => {
+        return {
+            marginLeft : '10px',
+            marginRight : '10px'
+        }
+    })
+
+    const textAreaStyle = useMemo(() => {
+        return {
+            minHeight : '320px',
+            border : '0',
+            padding : '15px 0px 10px 20px'
+        }
+    })
+
+
     return (
         <AppLayout>
-            <Row style={{ marginLeft :'10px', marginRight : "10px" }} gutter={24}>
+            <Row style={RowStyle} gutter={24}>
                 {imagePaths.map((v, i) => {
                   return  (
                       <>
                           <Col xs={12} md={12}>
-                          <div key={v} style={{width: '100%', height: '100%'}}>
-                              <MinusSquareOutlined onClick={onRemoveItem} style={{marginTop : '10px', color: 'rgb(234, 16, 34)' ,fontSize: '16px', float : 'right'}}/>
-                            <img src={v} style={{ width : '100%'}} alt={v} />
+                          <div key={v} style={divStyle}>
+                              <MinusSquareOutlined onClick={onRemoveItem} style={iconStyle}/>
+                            <img src={v} style={imgStyle} alt={v} />
                         {/* <img src={`http://localhost:3055/${v}`} style={{ width :'200px' }} alt={v}/> */}
                     </div>
                         </Col>
@@ -122,19 +186,18 @@ const upload = () => {
             </Row>
             <br/><br/><br/>
             <div>
-            <Form style={{ marginLeft : '10px', marginRight : '10px' }} encType="multipart/form-data" onFinish={onImageUpload}>
-            <label>Title</label>
-            <Input type='text' value={title} onChange={onChangeTitle}></Input>
+            <Form style={formStyle} encType="multipart/form-data" onFinish={onImageUpload}>
+            <StyledInputs placeholder="상품명" key={`${me?.id} + ${me?.email} + title `}  style={{ fontSize : '32px', fontWeight : 'bold'}} type='text' value={title} onChange={onChangeTitle}></StyledInputs>
             <br/><br/>
             <Input.TextArea 
              value={content}
              onChange={onChangeContent}
-             style={{ minHeight : '320px' }}
+             style={textAreaStyle}
              placeholder="상품소개"
             />
-            <Input style={{ marginTop : "10px" }} type="number" value={price}  placeholder="가격" onChange={onChangePrice}></Input>
-            <Input style={{ marginTop : "10px" }}  required={true} type="text" value={hashtag}  placeholder="해쉬태그" onChange={onChangeHashtag}></Input>
-              <div style={{ marginTop : "10px" }}>
+            <StyledInputs key={`${me?.id} + ${me?.email} + price `} style={marginTopStyle} type="number" value={price}  placeholder="가격" onChange={onChangePrice}></StyledInputs>
+            <StyledInputs key={`${me?.id} + ${me?.email} + hashtag `} style={marginTopStyle}  required={true} type="text" value={hashtag}  placeholder="해쉬태그" onChange={onChangeHashtag}></StyledInputs>
+              <div style={marginTopStyle}>
                 <input type="file" name='image' multiple hidden ref={imageInput} onChange={onChangeInput}/>
                 <Button onClick={onClickImageUpload}>
                     이미지 업로드

@@ -7,13 +7,5 @@ body {
 
 img {
    cursor: pointer;
+   color : #0dff5e15;
  }
-
-img:hover {
-   cursor : hand;
-}
-
- 
-img { 
-   color : #5286e7
-}

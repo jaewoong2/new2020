@@ -116,24 +116,24 @@ function* watchLoadMyInfo() {
 /////////////////////////  내정보 받아오기    /////////////////////////////////////
 
 
-function itemToCartAPI() {
-    return axios.post('/user/cart')
+function itemToCartAPI(data) {
+    return axios.post('/user/cart', data)
 }
 
 function* itemToCart(action) {
     try {  
-        //  const result = yield call(itemToCartAPI, action.data)
+         const result = yield call(itemToCartAPI, action.data)
         yield delay(2000);
         yield put({
             type : ITEM_TO_CART_SUCCESS,
-            data : action.data
+            data : result.data
         })
         
     } catch(err) {
         console.error(err)
         yield put({
             type : ITEM_TO_CART_FAILURE,
-            // error : err.response.data
+            error : err.response.data
         })
     }
 }
@@ -145,13 +145,13 @@ function* watchItemToCart() {
 
 
 function itemByeCartAPI(data) {
-    return axios.delete('/user/cart', data)
+    return axios.delete(`/user/cart/${data}`)
 }
 
 function* itemByeCart(action) {
     try {  
-        //  const result = yield call(itemByeCartAPI, action.data)
-        yield delay(1000);
+         const result = yield call(itemByeCartAPI, action.data)
+        // yield delay(1000);
         yield put({
             type : ITEM_BYE_CART_SUCCESS,
             data : action.data
@@ -161,7 +161,7 @@ function* itemByeCart(action) {
         console.error(err)
         yield put({
             type : ITEM_BYE_CART_FAILURE,
-            // error : err.response.data
+            error : err.response.data
         })
     }
 }
