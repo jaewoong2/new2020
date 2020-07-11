@@ -7,6 +7,7 @@ import ModalForm from './ModalForm';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOG_OUT_REQUEST } from '../reducer/user';
 import styled from 'styled-components';
+import Router from 'next/router';
 const { SubMenu } = Menu;
 
 
@@ -28,9 +29,9 @@ const NavBar = () => {
         if(search) {
             setClickSearch(true)
         }
-        if(!search) {
-            setClickSearch(false)
-        }
+        // if(!search) {
+        //     setClickSearch(false)
+        // }
     },[search])
 
 
@@ -73,8 +74,11 @@ const NavBar = () => {
     },[])
 
     const onSearch = useCallback(() => {
-        message.info('구현 중 입니다')
-        // Router.push(`/hashtag/${search}`)
+        Router.push(`/hashtag/${search}`)
+        message.info('검색 중...')
+        
+        setClickSearch(false);
+        setSearch('');
     },[search])
 
     return (
@@ -86,15 +90,26 @@ const NavBar = () => {
             <Menu.Item key="upload" icon={<AppstoreOutlined />}>
                 <Link href="/upload"><a>Upload</a></Link>
             </Menu.Item>
-            <Menu.Item onClick={() => {!clickSearch && setClickSearch(true)}}>
+            <Menu.Item key="search" onClick={() => {!clickSearch && setClickSearch(true)}}>
             {!clickSearch ?
                 <SearchOutlined /> :
-                    (<SearchInput 
+                    (<Modal
+                        style={{ top : '20px' }}
+                        title={null}
+                        maskClosable={true}
+                        visible={clickSearch}
+                        footer={null}
+                        closable={false}
+                        onOk={() => {setClickSearch(false)}}
+                        onCancel={() => {setClickSearch(false)}}
+                    >
+                        <SearchInput 
                     value={search}
                     onChange={onChangeSearch}
                     onSearch={onSearch}
+                    allowClear={true}
                     enterButton='검색'/>
-                )}
+                </Modal>)}
                 </Menu.Item>
             {!me?.email ? 
             (<Menu.Item key="login" style={style} icon={<AppstoreOutlined />}>

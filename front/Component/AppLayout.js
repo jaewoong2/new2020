@@ -11,6 +11,7 @@ const AppLayout = ({ children, name }) => {
     <div>
       <NavBar name={name} />
       {!router.pathname.slice(1) && <Sliders/>}
+      {router?.pathname?.slice(1)?.split('/')[1] === '[tag]' && <Sliders/>}
       <Row justify="center" align="middle" gutter={8}>
         {/* gutter => col간에 간격 */}
         <Col xs={24} md={3}/>

@@ -11,6 +11,7 @@ const db = require('./models');
 const userRouter = require('./routes/user')
 const postRouter = require('./routes/post')
 const postsRouter = require('./routes/posts');
+const hashtagRouter = require('./routes/hashtag');
 // 모듈
 
 
@@ -51,6 +52,7 @@ app.use(passport.session());
 // 라우터 설정
 app.use('/user', userRouter);
 app.use('/post', postRouter);
+app.use('/hashtag', hashtagRouter);
 app.use('/posts', postsRouter)
 
 

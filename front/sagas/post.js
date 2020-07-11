@@ -1,5 +1,5 @@
 import { takeLatest, delay, call, fork, all, put } from "redux-saga/effects"
-import { LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, UP_LOAD_POST_REQUEST, UP_LOAD_POST_SUCCESS, UP_LOAD_POST_FAILURE, DELETE_POST_FAILURE, DELETE_POST_REQUEST, DELETE_POST_SUCCESS, LOAD_ONE_POST_REQUEST, LOAD_ONE_POST_SUCCESS, LOAD_ONE_POST_FAILURE } from "../reducer/post"
+import { LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, UP_LOAD_POST_REQUEST, UP_LOAD_POST_SUCCESS, UP_LOAD_POST_FAILURE, DELETE_POST_FAILURE, DELETE_POST_REQUEST, DELETE_POST_SUCCESS, LOAD_ONE_POST_REQUEST, LOAD_ONE_POST_SUCCESS, LOAD_ONE_POST_FAILURE, SEARCH_HASHTAG_REQUEST, SEARCH_HASHTAG_SUCCESS, SEARCH_HASHTAG_FAILURE } from "../reducer/post"
 import axios from 'axios';
 
 
@@ -119,6 +119,33 @@ function* watchDeletePosts() {
     yield takeLatest(DELETE_POST_REQUEST, deletePost);
 }
 
+//해쉬태그 검색
+function searchHashtagAPI(data, lastId) {
+    return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`)
+}
+
+function* searchHashtag(action) {
+    try {  
+         const result = yield call(searchHashtagAPI, action.data ,action.lastId)
+        yield put({
+            type : SEARCH_HASHTAG_SUCCESS,
+            data : result.data
+        })
+        
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type : SEARCH_HASHTAG_FAILURE,
+            error : err.response.data
+        })
+    }
+}
+
+function* watchSearchHashtag() {
+    yield takeLatest(SEARCH_HASHTAG_REQUEST, searchHashtag);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 export default function* postSaga() {
     yield all([
@@ -126,5 +153,6 @@ export default function* postSaga() {
         fork(watchUpLoadPosts),
         fork(watchDeletePosts),
         fork(watchLoadOnePosts),
+        fork(watchSearchHashtag)
     ])
 }

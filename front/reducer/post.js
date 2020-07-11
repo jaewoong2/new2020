@@ -31,6 +31,11 @@ export const DELETE_POST_REQUEST = 'DELETE_POST_REQUEST'
 export const DELETE_POST_SUCCESS = 'DELETE_POST_SUCCESS'
 export const DELETE_POST_FAILURE = 'DELETE_POST_FAILURE'
 
+export const SEARCH_HASHTAG_REQUEST = 'SEARCH_HASHTAG_REQUEST'
+export const SEARCH_HASHTAG_SUCCESS = 'SEARCH_HASHTAG_SUCCESS'
+export const SEARCH_HASHTAG_FAILURE = 'SEARCH_HASHTAG_FAILURE'
+
+
 ////////////////////////////////////////////////////////////////////////////
 
 const initialState = {
@@ -45,6 +50,10 @@ const initialState = {
     deletePostLoading: false,
     deletePostDone: false,
     deletePostError: null,
+
+    searchHashtagsLoading: false,
+    searchHashtagsDone: false,
+    searchHashtagsError: null,
 
     infiniteScroll : true,
     mainPosts: [],
@@ -132,6 +141,26 @@ const reducer = (state = initialState, action) => {
                 draft.deletePostLoading = false;
                 draft.deletePostDone = true;
                 draft.deletePostError = action.error;
+                break;
+
+                //해쉬태그
+            case SEARCH_HASHTAG_REQUEST:
+                draft.searchHashtagsLoading = true;
+                draft.searchHashtagsDone = false;
+                draft.searchHashtagsError = null;
+                break;
+
+            case SEARCH_HASHTAG_SUCCESS:
+                draft.searchHashtagsLoading = false;
+                draft.searchHashtagsDone = true;
+                draft.infiniteScroll = action.data.length === 10;
+                draft.mainPosts = action.data;
+                break;
+
+            case SEARCH_HASHTAG_FAILURE:
+                draft.searchHashtagsLoading = false;
+                draft.searchHashtagsDone = true;
+                draft.searchHashtagsError = action.error;
                 break;
 
 

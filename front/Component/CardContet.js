@@ -61,7 +61,6 @@ const CardContet = ({ content }) => {
     },[])
 
     const onClickRemove = useCallback(() => {
-        console.log(content.UserId, me?.id)
         me?.id === content.UserId && dispatch({
             type : DELETE_POST_REQUEST,
             data : content.id
@@ -72,16 +71,13 @@ const CardContet = ({ content }) => {
 
     const onClickItem = useCallback(() => {
         Router.replace(`/page/${content.id}`)
-        console.log(content.id)
     },[])
-
-    console.log(content?.Images?.map((v => v.src)))
-
 
     return (
         <>
         <Col xs={12} md={8}>
     <Card
+    key={`${content?.id}_${content?.title}_${content?.UserId}__`}
     bordered={false}
     title={<Tooltip title={content.title}><span onClick={onClickItem}>{content.title}</span></Tooltip>}
     extra={me?.id === content.UserId ? (!deletePostLoading ? <div onClick={onClickRemove}><a href="#">삭제</a></div> : <LoadingOutlined/>) : <TagOutlined/>}
@@ -100,7 +96,7 @@ const CardContet = ({ content }) => {
          <ShoppingTwoTone onClick={onClicktoCart} twoToneColor={me?.Carts?.find(v => v?.Cart?.PostId === content.id) ? 'gray' : '#3f9e13e1'} />
     ]}
     >
-    <Meta description={content.PostHashTags.map((v =>{return <Link href="#"><a>{`#${v.name} `}</a></Link>}))}/>
+    <Meta description={content.PostHashTags.map((v =>{return <Link href={`/hashtag/${v.name}`}><a>{`#${v.name} `}</a></Link>}))}/>
   </Card>
         </Col>
         </>
