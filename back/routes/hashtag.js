@@ -11,12 +11,24 @@ router.get('/:hashtag', async (req, res, next) => { // hashtag/:hashtag?lastId=3
         }
         const posts = await Post.findAll({
             where,
+            include : [{
+                model : Hashtag,
+                as : 'PostHashTags',
+                where : { name : decodeURIComponent(req.params.hashtag) }
+            }]
+        });
+        
+        if(!posts) {
+            return res.status(403).send('존재하지 않는 게시물')
+        }
+
+        const postWithHashtag = await Post.findAll({
+            where : {id : posts.map((v) => v.id)},
             limit : 10,
             order : [['createdAt', 'DESC']],
             include : [{
                 model : Hashtag,
                 as : 'PostHashTags',
-                where : { name : decodeURIComponent(req.params.hashtag)}
             }, {
                 model : User,
                 attributes : ['id', 'nickname']
@@ -27,11 +39,8 @@ router.get('/:hashtag', async (req, res, next) => { // hashtag/:hashtag?lastId=3
             }, {
                 model : Image
             }]
-        });
-        if(!posts) {
-            return res.status(403).send('존재하지 않는 게시물')
-        }
-        res.status(201).json(posts)
+        })
+        res.status(201).json(postWithHashtag)
     } catch (err) {
         console.error(err)
         next(err)

@@ -6,9 +6,24 @@ import { LOAD_ONE_POST_REQUEST } from '../../reducer/post';
 import { Carousel, Select, Row, Col, Typography } from 'antd';
 import NavBar from '../../Component/NavBar';
 import Link from 'next/link';
+import styled from 'styled-components';
 
 const hundered = Array(100).fill(0).map((v, i) => v = i + 1);
 const { Option } = Select;
+
+const Buybutton = styled.div`
+width: 50px;
+height: 50px;
+border-radius: 4px 4px 4px 4px;
+background-color: blue;
+position: fixed;
+bottom: 30px;
+right: 40px; 
+box-shadow: -0.1px -0.1px 11px blue;
+cursor: pointer;
+`
+
+
 
 const page = () => {
     const [number, setNumber] = useState(1);
@@ -32,14 +47,14 @@ const page = () => {
     
     const style = useMemo(() => {
         return {
-            height: '20%',
+            maxHeight: '20%',
             lineHeight: '20%',
             background: '#dfdfdfec',
             overflow: 'hidden',
         }
     })
 
-    const styledDiv = useMemo(() => {
+    const styledDiv = useMemo(() => { // description
         return {
             display : 'block',
             margin : 'auto',
@@ -47,9 +62,10 @@ const page = () => {
            width: '95%',
         }
     })
+
+
     const styleDiv = useMemo(() => {
         return {
-            height: '20%',
             cursor : 'hand',
             width : '60%',
             maxHeight: '480px',
@@ -94,13 +110,13 @@ const page = () => {
                 {onePost?.Images?.map(v => {
                     return (
                         <div style={styleDiv}>
-                <img style={styleImg} src={v.src}></img>
+                <img style={styleImg} src={`http://localhost:3055/${v.src}`}></img>
                         </div>
                     )
                 })}
             </Carousel>
             <div>
-            <Typography.Text style={{ marginTop: '7px', float: 'right' }} keyboard>{onePost?.PostHashTags?.map(v => (<Link href="#" ><a>{`#${v.name} `}</a></Link>))}</Typography.Text>
+            <Typography.Text style={{ marginTop: '7px', float: 'right' }} keyboard>{onePost?.PostHashTags?.map(v => (<Link href={`/hashtag/${v.name}`} ><a>{`#${v.name} `}</a></Link>))}</Typography.Text>
             <Typography>
             <Typography.Title strong style={{ marginTop: '10px', marginLeft : '20px'}} >{onePost?.title}</Typography.Title>
             </Typography>

@@ -1,5 +1,5 @@
 import { takeLatest, delay, call, fork, all, put } from "redux-saga/effects"
-import { LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, UP_LOAD_POST_REQUEST, UP_LOAD_POST_SUCCESS, UP_LOAD_POST_FAILURE, DELETE_POST_FAILURE, DELETE_POST_REQUEST, DELETE_POST_SUCCESS, LOAD_ONE_POST_REQUEST, LOAD_ONE_POST_SUCCESS, LOAD_ONE_POST_FAILURE, SEARCH_HASHTAG_REQUEST, SEARCH_HASHTAG_SUCCESS, SEARCH_HASHTAG_FAILURE } from "../reducer/post"
+import { LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, UP_LOAD_POST_REQUEST, UP_LOAD_POST_SUCCESS, UP_LOAD_POST_FAILURE, DELETE_POST_FAILURE, DELETE_POST_REQUEST, DELETE_POST_SUCCESS, LOAD_ONE_POST_REQUEST, LOAD_ONE_POST_SUCCESS, LOAD_ONE_POST_FAILURE, SEARCH_HASHTAG_REQUEST, SEARCH_HASHTAG_SUCCESS, SEARCH_HASHTAG_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE } from "../reducer/post"
 import axios from 'axios';
 
 
@@ -145,6 +145,33 @@ function* watchSearchHashtag() {
     yield takeLatest(SEARCH_HASHTAG_REQUEST, searchHashtag);
 }
 
+// 이미지 업로드
+function imageUploadAPI(data) {
+    return axios.post('/post/images', data)
+}
+
+function* imageUpload(action) {
+    try {  
+         const result = yield call(imageUploadAPI, action.data)
+        yield put({
+            type : UPLOAD_IMAGES_SUCCESS,
+            data : result.data
+        })
+        
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type : UPLOAD_IMAGES_FAILURE,
+            error : err.response.data
+        })
+    }
+}
+
+function* watchImageUpload() {
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, imageUpload);
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 export default function* postSaga() {
@@ -153,6 +180,7 @@ export default function* postSaga() {
         fork(watchUpLoadPosts),
         fork(watchDeletePosts),
         fork(watchLoadOnePosts),
-        fork(watchSearchHashtag)
+        fork(watchSearchHashtag),
+        fork(watchImageUpload),
     ])
 }

@@ -50,7 +50,8 @@ const cart = () => {
             {/* <Skeleton avatar title={true}  active> */}
               <List.Item.Meta
                 avatar={
-                  <img style={{ width : 150 }} src={item?.Images && item?.Images[0].src} />
+                  <img style={{ width : 150 }} src={item?.Images && `http://localhost:3055/${item?.Images[0].src}`} />
+                  
                 }
                 title={<a href="https://ant.design">{item.title}</a>}
                 description={item.description}

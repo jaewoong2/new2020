@@ -85,7 +85,7 @@ const CardContet = ({ content }) => {
     cover={<CarouselImage draggable autoplay>
         {content?.Images?.map((v) => {
             return (<div>
-           {v?.src ? (<Styledimage onClick={onClickItem} key={`${content.id}${me?.id}_imgcover`} style={styledImg} alt="example" src={v?.src}/>) :
+           {v?.src ? (<Styledimage onClick={onClickItem} key={`${content.id}${me?.id}_imgcover`} style={styledImg} alt="example" src={`http://localhost:3055/${v.src}`}/>) :
            (<div>이미지</div>)}
             </div>)
         })}

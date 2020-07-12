@@ -9,7 +9,7 @@ import { Loading3QuartersOutlined } from '@ant-design/icons'
 import { message } from 'antd'
 
 export default function Home() {
-  const { infiniteScroll, mainPosts, loadPostLoading, loadPostDone } = useSelector((state) => state.post)
+  const { infiniteScroll, mainPosts, loadPostLoading, loadPostDone, first } = useSelector((state) => state.post)
   const dispatch = useDispatch();
   const myRef = useRef(null);
 
@@ -20,10 +20,10 @@ export default function Home() {
   },[])
 
   useEffect(() => {
-    mainPosts.length === 0 && dispatch({ 
+    first && dispatch({ 
       type : LOAD_POST_REQUEST
     })
-  },[mainPosts])
+  },[first])
 
 
   useEffect(() => {

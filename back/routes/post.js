@@ -3,8 +3,33 @@ const { User, Post, Hashtag, Image, Review } = require('../models');
 const { response } = require('express');
 const { isLoggedIn } = require('./middleware');
 const router = express.Router()
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
-router.post('/', isLoggedIn,async(req, res, next) => {
+try {
+    fs.accessSync('uploads');
+} catch (err) {
+    console.log('폴더 생성...');
+    fs.mkdirSync('uploads');
+}
+
+const upload = multer({
+    storage : multer.diskStorage({
+        destination(req, file, done) {
+            done(null, 'uploads') // 업로드 파일에 저장
+        },
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname); // 확장자
+            const basename = path.basename(file.originalname, ext);
+            done(null, basename + '_' + new Date().getTime() + ext)
+        },
+    }),
+    limits : { fileSize : 20 * 1024 * 1024} // 20mb
+})
+
+
+router.post('/', isLoggedIn, upload.none(),async(req, res, next) => {
     try {
         const hashtags = req.body.hashtag.match(/(#[^\s#]+)/g);
         const post = await Post.create({
@@ -60,6 +85,11 @@ router.post('/', isLoggedIn,async(req, res, next) => {
         console.error(err);
         next(err)
     }
+})
+
+router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
+    console.log(req.files)
+    res.json(req.files.map(v => v.filename));
 })
 
 router.get('/:postId', async (req, res, next) => { // 홈페이지 확인
