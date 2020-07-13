@@ -58,6 +58,18 @@ router.post('/', isLoggedIn, upload.none(),async(req, res, next) => {
             }
         }
 
+        if(req.body.imageInfo) {
+            if(Array.isArray(req.body.imageInfo)) {
+                const images = await Promise.all(req.body.imageInfo.map((image) => {
+                    return Image.create({ src : image });
+                }))
+                await post.addInfo(images);
+            } else {
+                const image = await Image.create({ src : req.body.imageInfo });
+                await post.addInfo(image)
+            }
+        }
+
         const fullPost = await Post.findOne({
             where : { id : post.id },
             include : [{
@@ -78,6 +90,9 @@ router.post('/', isLoggedIn, upload.none(),async(req, res, next) => {
             }, {
                 model : Hashtag,
                 as : 'PostHashTags'
+            }, {
+                model : Image,
+                as : 'Info'
             }]
         })
         res.status(201).json(fullPost)
@@ -91,6 +106,13 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
     console.log(req.files)
     res.json(req.files.map(v => v.filename));
 })
+
+router.post('/imageInfo', isLoggedIn, upload.array('image'), (req, res, next) => {
+    console.log(req.files)
+    res.json(req.files.map(v => v.filename));
+})
+
+
 
 router.get('/:postId', async (req, res, next) => { // 홈페이지 확인
     try {

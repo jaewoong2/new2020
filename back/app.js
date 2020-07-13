@@ -24,6 +24,7 @@ app.use(morgan('dev')); // 로그남기기
 
 db.sequelize.sync({
     // force : true
+    // alter : true
   })
     .then(() => {
       console.log('db 연결 성공');

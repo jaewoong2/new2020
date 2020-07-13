@@ -4,12 +4,16 @@ import { Upload, Button, Form, Input, Row, Col, message } from 'antd';
 import { UploadOutlined, DeleteOutlined, LineOutlined, MinusSquareOutlined, InboxOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import faker from 'faker';
-import { UP_LOAD_POST_REQUEST, UPLOAD_IMAGES_REQUEST } from '../reducer/post';
+import { UP_LOAD_POST_REQUEST, UPLOAD_IMAGES_REQUEST, UPLOAD_INFO_IMAGES_REQUEST } from '../reducer/post';
 import Router, { useRouter } from 'next/router';
 import { LOAD_MY_INFO_REQUEST } from '../reducer/user';
 import hashtag from '../../back/models/hashtag';
 import styled from 'styled-components';
 import Dragger from 'antd/lib/upload/Dragger';
+import dynamic from "next/dynamic";
+const Editor = dynamic(() => import('../Component/Editor'), {
+    ssr : false
+});
 
 const ButtonInputImage = styled(Button)`
     display : block;
@@ -50,9 +54,10 @@ const upload = () => {
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState(0);
     const [hashtag, setHashtag] = useState('')
+    const [text, setText] = useState('')
 
     const { me, loadMyInfoLoading } = useSelector((state) => state.user);
-    const { upLoadPostDone, upLoadPostLoading, imagePaths } = useSelector(state => state.post)
+    const { upLoadPostDone, upLoadPostLoading, imagePaths, imageInfoPaths } = useSelector(state => state.post)
     const router = useRouter();
     const imageInput = useRef();
     const imageInfoInput = useRef();
@@ -75,6 +80,11 @@ const upload = () => {
         imageInput.current.click();
     }, [imageInput.current])
 
+    
+    const onClickImageInfoUpload = useCallback(() => {
+        imageInfoInput.current.click();
+    }, [imageInfoInput.current])
+
     const onChangeInput = useCallback((e) => {
         // console.log(e.target)
         console.log('images', e.target.files) // 우리가 선택한 이미지 정보
@@ -89,6 +99,19 @@ const upload = () => {
         })
     });
 
+    const onChangeInfoInput = useCallback((e) => {
+        // console.log(e.target)
+        console.log('images', e.target.files) // 우리가 선택한 이미지 정보
+        const imageFormData = new FormData(); // multer 가 처리하기 위해
+        [].forEach.call(e.target.files, (f) => {
+            imageFormData.append('image', f); // 키, 값 ( upload.array('image') ) 의 키('images) 값이랑 같아야함
+            console.log(imageFormData)
+        });
+        dispatch({
+            type: UPLOAD_INFO_IMAGES_REQUEST,
+            data: imageFormData
+        })
+    });
 
     const onChangeContent = useCallback((e) => {
         setContent(e.target.value);
@@ -133,6 +156,9 @@ const upload = () => {
             imagePaths.forEach((image) => {
                 formData.append('image', image)
             });
+            imageInfoPaths.forEach((image) => {
+                formData.append('imageInfo', image)
+            });
             formData.append('description', content)
             formData.append('title', title)
             formData.append('price', String(price))
@@ -144,7 +170,7 @@ const upload = () => {
             !upLoadPostLoading && Router.replace('/');
             !upLoadPostLoading && message.info('업로드 되었습니다.')
         }
-    }, [content, title, imagePaths, price, hashtag])
+    }, [content, title, imagePaths, price, hashtag, imageInfoPaths])
 
 
     const marginTopStyle = useMemo(() => {
@@ -221,8 +247,13 @@ const upload = () => {
                 <Form style={formStyle} encType="multipart/form-data" onFinish={onImageUpload}>
                     <StyledInputs required={true} placeholder="상품명" key={`${me?.id} + ${me?.email} + title `} style={{ fontSize: '32px', fontWeight: 'bold' }} type='text' value={title} onChange={onChangeTitle}></StyledInputs>
                     <br /><br />
-                    <input type="file" name='image' multiple hidden ref={imageInfoInput} onChange={onChangeInput} />
-                    <ButtonInputImage onClick={onClickImageUpload}><InboxOutlined style={{ fontSize : 32 }}/></ButtonInputImage>
+                    <input type="file" name='image' multiple hidden ref={imageInfoInput} onChange={onChangeInfoInput} />
+                    <ButtonInputImage onClick={onClickImageInfoUpload}><InboxOutlined style={{ fontSize : 32 }}/></ButtonInputImage>
+                    {imageInfoPaths?.map((v, i) => {
+                        return (
+                        <div>{`${i + 1}. ${v}`}</div>
+                        )
+                    })}
             <Input.TextArea
                         required={true}
                         value={content}

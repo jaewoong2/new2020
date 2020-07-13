@@ -39,6 +39,10 @@ export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
 
+export const UPLOAD_INFO_IMAGES_REQUEST = 'UPLOAD_INFO_IMAGES_REQUEST';
+export const UPLOAD_INFO_IMAGES_SUCCESS = 'UPLOAD_INFO_IMAGES_SUCCESS';
+export const UPLOAD_INFO_IMAGES_FAILURE = 'UPLOAD_INFO_IMAGES_FAILURE';
+
 ////////////////////////////////////////////////////////////////////////////
 
 const initialState = {
@@ -66,6 +70,7 @@ const initialState = {
     mainPosts: [],
     first: true,
     imagePaths: [],
+    imageInfoPaths : [],
     onePost: {},
 }
 
@@ -186,6 +191,25 @@ const reducer = (state = initialState, action) => {
                 break;
 
             case UPLOAD_IMAGES_FAILURE:
+                draft.uploadImagesLoading = false;
+                draft.uploadImagesDone = true;
+                draft.uploadImagesError = action.error;
+                break;
+
+           //업로드 이미지
+            case UPLOAD_INFO_IMAGES_REQUEST:
+                draft.uploadImagesLoading = true;
+                draft.uploadImagesDone = false;
+                draft.uploadImagesError = null;
+                break;
+
+            case UPLOAD_INFO_IMAGES_SUCCESS:
+                draft.uploadImagesLoading = false;
+                draft.uploadImagesDone = true;
+                draft.imageInfoPaths = action.data
+                break;
+
+            case UPLOAD_INFO_IMAGES_FAILURE:
                 draft.uploadImagesLoading = false;
                 draft.uploadImagesDone = true;
                 draft.uploadImagesError = action.error;

@@ -7,23 +7,23 @@ import { Carousel, Select, Row, Col, Typography } from 'antd';
 import NavBar from '../../Component/NavBar';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { DollarOutlined } from '@ant-design/icons';
 
 const hundered = Array(100).fill(0).map((v, i) => v = i + 1);
 const { Option } = Select;
 
 const Buybutton = styled.div`
-width: 50px;
-height: 50px;
-border-radius: 4px 4px 4px 4px;
-background-color: blue;
-position: fixed;
-bottom: 30px;
-right: 40px; 
-box-shadow: -0.1px -0.1px 11px blue;
-cursor: pointer;
-`
-
-
+    width: 50px;
+    height: 50px;
+    border-radius: 4px 4px 4px 4px;
+    background-color: blue;
+    position: fixed;
+    bottom: 30px;
+    right: 40px; 
+    box-shadow: -0.1px -0.1px 11px blue;
+    cursor: pointer;
+    font-size : 30px;
+`;
 
 const page = () => {
     const [number, setNumber] = useState(1);
@@ -44,10 +44,27 @@ const page = () => {
         })
     },[]);
 
-    
+    const divStyleWithBuyBtn = useMemo(() => {
+        return {
+            width: '45px',
+            height: '45px',
+            borderRadius: '9px 9px 9px 9px',
+            backgroundColor: 'rgba(0, 140, 255, 0)',
+            position: 'fixed',
+            bottom: '30px',
+            right: '40px',
+            boxShadow: '-0.1px -0.1px 11px rgba(0, 0, 105, 0.534)',
+            cursor: 'pointer',
+            fontSize : '30px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }
+    })
+
     const style = useMemo(() => {
         return {
-            maxHeight: '20%',
+            height: '20%',
             lineHeight: '20%',
             background: '#dfdfdfec',
             overflow: 'hidden',
@@ -66,6 +83,8 @@ const page = () => {
 
     const styleDiv = useMemo(() => {
         return {
+            height: '20%',
+
             cursor : 'hand',
             width : '60%',
             maxHeight: '480px',
@@ -104,8 +123,6 @@ const page = () => {
         <NavBar/>        
            <Row justify="center" align="middle" gutter={8}>
            {/* gutter => col간에 간격 */}
-           <Col xs={24} md={2}/>
-           <Col xs={24} md={20}>
            <Carousel style={style} autoplay draggable={true}>
                 {onePost?.Images?.map(v => {
                     return (
@@ -115,6 +132,8 @@ const page = () => {
                     )
                 })}
             </Carousel>
+           <Col xs={24} md={2}/>
+           <Col xs={24} md={20}>
             <div>
             <Typography.Text style={{ marginTop: '7px', float: 'right' }} keyboard>{onePost?.PostHashTags?.map(v => (<Link href={`/hashtag/${v.name}`} ><a>{`#${v.name} `}</a></Link>))}</Typography.Text>
             <Typography>
@@ -136,6 +155,7 @@ const page = () => {
             <div style={styledDiv}>{onePost?.description}</div>
            </Col>
            <Col xs={24} md={2}>
+            <div style={divStyleWithBuyBtn}><DollarOutlined/></div>
            </Col>
          </Row>
       </div>

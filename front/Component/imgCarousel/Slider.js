@@ -19,8 +19,8 @@ const Sliders = () => {
 
     const styleDiv = useMemo(() => {
         return {
-            height: '20%',
-            cursor : 'hand',
+          height: '20%',
+          cursor : 'hand',
             width : '60%',
             maxHeight: '480px',
         }
