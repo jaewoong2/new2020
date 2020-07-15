@@ -15,7 +15,7 @@ const { Meta } = Card;
 const Styledimage = styled.img`
     transition: box-shadow 0.5s;
     &:hover {
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.7), 0 6px 20px 0 rgba(0, 0, 0, 0.69);
+        box-shadow: 1px 4px 8px 1px rgba(0, 0, 0, 0.7), 1px 6px 20px 1px rgba(0, 0, 0, 0.69);
     }    
 `
 
@@ -84,10 +84,12 @@ const CardContet = ({ content }) => {
     style={{ width: '100%' }}
     cover={<CarouselImage draggable autoplay>
         {content?.Images?.map((v) => {
+            if(!v?.InfoId) { 
             return (<div>
            {v?.src ? (<Styledimage onClick={onClickItem} key={`${content.id}${me?.id}_imgcover`} style={styledImg} alt="example" src={`http://localhost:3055/${v.src}`}/>) :
            (<div>이미지</div>)}
-            </div>)
+            </div>) 
+            }
         })}
         </CarouselImage>}
     actions={[

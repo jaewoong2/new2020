@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react';
 import AppLayout from '../Component/AppLayout';
 import { Upload, Button, Form, Input, Row, Col, message } from 'antd';
-import { UploadOutlined, DeleteOutlined, LineOutlined, MinusSquareOutlined, InboxOutlined } from '@ant-design/icons';
+import { UploadOutlined, DeleteOutlined, LineOutlined, MinusSquareOutlined, InboxOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import faker from 'faker';
 import { UP_LOAD_POST_REQUEST, UPLOAD_IMAGES_REQUEST, UPLOAD_INFO_IMAGES_REQUEST } from '../reducer/post';
@@ -248,10 +248,10 @@ const upload = () => {
                     <StyledInputs required={true} placeholder="상품명" key={`${me?.id} + ${me?.email} + title `} style={{ fontSize: '32px', fontWeight: 'bold' }} type='text' value={title} onChange={onChangeTitle}></StyledInputs>
                     <br /><br />
                     <input type="file" name='image' multiple hidden ref={imageInfoInput} onChange={onChangeInfoInput} />
-                    <ButtonInputImage onClick={onClickImageInfoUpload}><InboxOutlined style={{ fontSize : 32 }}/></ButtonInputImage>
+                    <ButtonInputImage onClick={onClickImageInfoUpload}><InboxOutlined style={{ fontSize : 32 }}/><br/><p style={{ fontSize : '24px' }}>상세정보 이미지</p></ButtonInputImage>
                     {imageInfoPaths?.map((v, i) => {
                         return (
-                        <div>{`${i + 1}. ${v}`}</div>
+                        <div style={{ marginTop : '7px' }}><PaperClipOutlined style={{marginRight : '15px'}}/>{`${i + 1}. ${v}`}</div>
                         )
                     })}
             <Input.TextArea

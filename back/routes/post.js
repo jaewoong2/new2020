@@ -61,12 +61,12 @@ router.post('/', isLoggedIn, upload.none(),async(req, res, next) => {
         if(req.body.imageInfo) {
             if(Array.isArray(req.body.imageInfo)) {
                 const images = await Promise.all(req.body.imageInfo.map((image) => {
-                    return Image.create({ src : image });
+                    return Image.create({ src : image, InfoId : post.id });
                 }))
-                await post.addInfo(images);
+                await post.addInfo(images.id);
             } else {
-                const image = await Image.create({ src : req.body.imageInfo });
-                await post.addInfo(image)
+                const image = await Image.create({ src : req.body.imageInfo, InfoId : post.id });
+                await post.addInfo(image.id)
             }
         }
 

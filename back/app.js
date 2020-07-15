@@ -31,7 +31,7 @@ db.sequelize.sync({
     })
     .catch(console.error);
 app.use(cors({
-    origin : 'http://localhost:3000',
+    origin : 'http://localhost:3065',
     credentials : true, // 쿠키를 같이 보냄
 }))
 

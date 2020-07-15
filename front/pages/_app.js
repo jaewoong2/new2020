@@ -27,4 +27,5 @@ const myApp = ( { Component, pageProps } ) => {
 };
 
 // export default wrapper.withRedux(withReduxSaga(NodeBird));
-export default wrapper.withRedux(withReduxSaga(myApp));
+// export default wrapper.withRedux(withReduxSaga(myApp));
+export default wrapper.withRedux(myApp);

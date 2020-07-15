@@ -11,7 +11,7 @@ function loadOnePostAPI(data) {
 
 function* loadOnePost(action) {
     try {  
-         const result = yield call(loadOnePostAPI, action.id)
+         const result = yield call(loadOnePostAPI, action.data)
         yield put({
             type : LOAD_ONE_POST_SUCCESS,
             data : result.data

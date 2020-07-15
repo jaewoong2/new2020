@@ -39,6 +39,9 @@ router.get('/', async (req, res, next) => {
                 attributes : {
                     exclude : ['password'],
                 }
+            }, {
+                model : Image,
+                as : 'Info'
             }]
         });
         res.status(200).json(posts)
